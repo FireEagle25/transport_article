@@ -36,9 +36,9 @@ class TruckService extends Observable{
           truck.change_status(truck_statuses.moving_to_the_warehouse);
         }
 
-        if (moving_ended) {
-          self.notify_all(truck);
+        self.notify_all(truck);
 
+        if (moving_ended) {
           switch (truck.status) {
             case truck_statuses.moving_to_the_outpost:
               self.check_truck_at_outpost(truck);

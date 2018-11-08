@@ -5,11 +5,11 @@ import Tariff from '../models/tariff.js';
 import Customer from '../models/customer.js';
 import OrdersService from './realtime_servises/orders_service.js';
 import OrderFactory from '../factories/order_factory.js';
-import OrderCreatedHandler from '../handles/order_created_handler.js';
-import Info from "../handles/info.js";
+import OrderCreatedHandler from '../handlers/order_created_handler.js';
+import Info from "../handlers/info.js";
 import GeoPoint from "../../node_modules/geopoint/geopoint.js";
 import TruckService from "./realtime_servises/truck_service";
-import OrderHandler from "../handles/order_handler";
+import OrderHandler from "../handlers/order_handler";
 
 export let factories_storage = [];
 export let warehouses_storage = [];
@@ -17,6 +17,9 @@ export let outposts_storage = [];
 export let tariffs_storage = [];
 export let customers_storage = [];
 export let orders_storage = [];
+
+export const truck_service = new TruckService();
+
 
 function start_app() {
 
@@ -45,14 +48,13 @@ function start_app() {
     new Customer(0, new GeoPoint(40.689604, -74.04455)),
     new Customer(1, new GeoPoint(40.689604, -74.04455)));
 
-  const truck_service = new TruckService();
   const orders_service = new OrdersService();
   const order_factory = new OrderFactory();
 
   order_factory.subscribe(new OrderCreatedHandler(orders_service));
   //order_factory.subscribe(new Info('Заказ создан'));
   orders_service.subscribe(new OrderHandler(truck_service));
-  truck_service.subscribe(new Info('Грузовик приехал куда-то'));
+  //truck_service.subscribe(new Info('Грузовик приехал куда-то'));
 
 
 }
