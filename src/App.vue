@@ -1,7 +1,20 @@
 <template>
   <div id="app">
 
-    <div id="trucks-map" style="width:100vw; height: 100vh;"></div>
+    <div id="trucks-map" style="width:70vw; height: 100vh;"></div>
+
+    <div id="sidebar">
+
+      <H2>Статистика</H2>
+
+      <br />
+
+      <p><b>Параметр 1:</b> содержимое</p>
+      <p><b>Параметр 2:</b> содержимое</p>
+      <p><b>Параметр 3:</b> содержимое</p>
+      <p><b>Параметр 4:</b> содержимое</p>
+
+    </div>
 
   </div>
 </template>
@@ -85,9 +98,18 @@
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin: 0;
-  padding: 0;
 }
+
+  #sidebar {
+    position: absolute;
+    width: calc(30vw - 30px);
+    height: calc(100vh - 30px);
+    right: 0;
+    top: 0;
+    padding: 15px;
+    background: #ffffff;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    z-index: 9999;
+  }
 </style>
