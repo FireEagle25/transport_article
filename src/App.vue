@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <div id="buses-map" style="width:100vw; height: 100vh;"></div>
+    <div id="trucks-map" style="width:100vw; height: 100vh;"></div>
 
   </div>
 </template>
@@ -19,7 +19,7 @@
       move_truck: function (truck) {
 
         if (!this.markers[truck.id]) {
-          this.markers[truck.id] = L.marker([truck.geo._degLat, truck.geo._degLon], {icon: this.busIcon});
+          this.markers[truck.id] = L.marker([truck.geo._degLat, truck.geo._degLon], {icon: this.truckIcon});
           this.markers[truck.id].bindTooltip("Грузовик " + truck.id).openTooltip();
           this.markers[truck.id].addTo(this.map);
         } else {
@@ -36,10 +36,10 @@
 
       this.markers = [];
       this.markersActualPosition = [];
-      this.map = L.map('buses-map').setView([40.689604, -74.04455], 14);
+      this.map = L.map('trucks-map').setView([40.689604, -74.04455], 14);
 
-      this.busIcon = L.icon({
-        iconUrl: 'https://png.pngtree.com/svg/20170401/delivery_truck_934065.png',
+      this.truckIcon = L.icon({
+        iconUrl: 'http://aux2.iconspalace.com/uploads/truck-icon-256-1204409192.png',
         iconSize: [30, 30],
         iconAnchor: [15, 15],
         popupAnchor: [-3, -76]
