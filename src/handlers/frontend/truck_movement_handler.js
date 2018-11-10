@@ -3,7 +3,9 @@ class TruckMovementHandler {
     this.component = component;
   }
 
-  handle(truck) {
+  notify(truck) {
     this.component.move_truck(truck);
   }
 }
+
+export default TruckMovementHandler;

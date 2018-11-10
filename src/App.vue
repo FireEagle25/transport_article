@@ -1,11 +1,8 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
 
-    <div id="hyj">
+    <div id="buses-map" style="width:100vw; height: 100vh;"></div>
 
-    </div>
   </div>
 </template>
 
@@ -18,22 +15,79 @@
     methods: {
       getActualData: function () {
         truck_service.subscribe(new TruckMovementHandler(this));
+      },
+      move_truck: function (truck) {
+
+        if (!this.markers[truck.id]) {
+          this.markers[truck.id] = L.marker([truck.geo._degLat, truck.geo._degLon], {icon: this.busIcon});
+          this.markers[truck.id].bindTooltip("Грузовик " + truck.id).openTooltip();
+          this.markers[truck.id].addTo(this.map);
+        } else {
+          this.markersActualPosition[truck.id] = {lat: truck.geo._degLat, lng: truck.geo._degLon};
+        }
+
+        console.log("Truck position set: " + truck)
       }
     },
-    beforeMount() {
+    mounted() {
+      console.log("mounted");
+
       this.getActualData();
+
+      this.markers = [];
+      this.markersActualPosition = [];
+      this.map = L.map('buses-map').setView([40.689604, -74.04455], 14);
+
+      this.busIcon = L.icon({
+        iconUrl: 'https://png.pngtree.com/svg/20170401/delivery_truck_934065.png',
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [-3, -76]
+      });
+
+      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '',
+        maxZoom: 18
+      }).addTo(this.map);
+
+      var lerpingInterval = setInterval(
+        function () {
+          for (var key in this.markers) {
+            var currentLatLng = this.markers[key].getLatLng();
+            var targetPosition = this.markersActualPosition[key];
+
+            if (!targetPosition)
+              return;
+
+            this.markers[key].setLatLng([lerp(currentLatLng.lat, targetPosition.lat),
+              lerp(currentLatLng.lng, targetPosition.lng)]);
+          }
+        },
+        50
+      );
+
+      function lerp(from, to) {
+        return from+((to-from)/20);
+      }
+
     }
   }
 
 </script>
 
 <style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 0;
+  padding: 0;
 }
 </style>
