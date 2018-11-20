@@ -5,7 +5,7 @@ import {orders_storage} from "../main";
 import {order_statuses} from "../../models/order";
 import {find_nearest_warehouse} from "../logistic";
 
-const MOVE_INTERVAL = 1000;
+const MOVE_INTERVAL = 20000;
 
 
 class TruckService extends Observable{
@@ -19,9 +19,11 @@ class TruckService extends Observable{
 
   push(truck) {
     this.trucks.push(truck);
+    this.notify_all(truck);
   }
 
   remove(truck) {
+    console.log('removed', truck);
     this.trucks.splice(this.trucks.indexOf(truck), 1);
   }
 
@@ -60,24 +62,30 @@ class TruckService extends Observable{
 
       });
     }, MOVE_INTERVAL);
+
   }
 
   check_truck_at_outpost(truck) {
+    console.log('проверяем', truck);
     let self = this;
 
     truck.change_status(truck_statuses.at_the_outpost);
     self.remove(truck);
 
     setTimeout(function () {
+      console.log(truck, 'Меняем статут после проверки');
       if (orders_storage[truck.order_id].status == order_statuses.active) {
+        truck.change_path(get_geo_path(truck.geo, orders_storage[truck.order_id].customer.geo), orders_storage[truck.order_id].customer);
 
-        truck.change_path(get_geo_path(truck.geo, orders_storage[truck.order_id].geo), orders_storage[truck.order_id].customer);
         truck.change_status(truck_statuses.moving_to_the_client);
+
+        console.log(truck, truck.status, 'Поменяли статут после проверки');
       }
       else {
         truck.change_path(get_geo_path(truck.geo, find_nearest_warehouse(truck.geo).geo, find_nearest_warehouse(truck.geo)));
         truck.change_status(truck_statuses.moving_to_the_warehouse);
       }
+      console.log('возвращаем', truck);
       self.push(truck);
     }, truck.dest.get_check_time(truck.products_count));
   }

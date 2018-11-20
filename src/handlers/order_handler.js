@@ -11,7 +11,6 @@ class OrderHandler {
   }
 
   notify(order) {
-    //TODO: формируем грузовики, используя фабрику грузовиков, сервис грузвиков и расчет по геолокации
     if (order.status !== order_statuses.handle)
       return;
 
@@ -25,7 +24,10 @@ class OrderHandler {
     let truck_generation = setInterval(function () {
       orders_storage[order.id].change_status(order_statuses.active);
 
-      const truck = run_truck(order.id, start_factory, truck_payloads.shift(), initial_way, find_nearest_outpost(initial_way[initial_way.length - 1]));
+      if (initial_way.length == 0)
+        console.log(start_factory, order, truck_payloads, initial_way[0]);
+
+      const truck = run_truck(order.id, start_factory, truck_payloads.shift(), initial_way, find_nearest_outpost(initial_way[0]));
       self.truck_service.push(truck);
 
       if (truck_payloads.length == 0)

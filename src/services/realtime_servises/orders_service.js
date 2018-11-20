@@ -1,9 +1,10 @@
 import Observable from "../../patterns_and_structures/observable.js";
 import PriorityQueue from "../../patterns_and_structures/priority_queue.js";
 import {order_statuses} from "../../models/order";
+import {orders_storage} from "../main";
 
 export const ORDER_HANDLE_TIME = 1 ; //ORDER_GENERATION_TIME;
-const CANCEL_TIME_IN_SECONDS = 1;
+const CANCEL_TIME_IN_SECONDS = 10;
 
 
 class OrdersService extends Observable{
@@ -39,9 +40,9 @@ class OrdersService extends Observable{
     let self = this;
 
     setInterval(function () {
-      self.priority_queue.data = self.priority_queue.data.map(order => {
-        if ((order.status != order_statuses.canceled && order.status != order_statuses.closed) && Math.floor((Date.now() - order.created_at) / 1000) > CANCEL_TIME_IN_SECONDS) {
-          if (Math.floor((Math.random() * 10 / order.tariff.priority) + 1) == 0) {
+      orders_storage.map(order => {
+        if ((order.status != order_statuses.canceled && order.status != order_statuses.closed) && Math.floor((Date.now() - order.created_at) / 1000) >= CANCEL_TIME_IN_SECONDS) {
+          if (Math.floor((Math.random() * 10 / order.tariff.priority)) == 0) {
             order.change_status(order_statuses.canceled);
             console.log("Отменили");
             //TODO: донастроить

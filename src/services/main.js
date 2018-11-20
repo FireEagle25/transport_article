@@ -24,9 +24,9 @@ export const truck_service = new TruckService();
 function start_app() {
 
   factories_storage.push(
-    new Factory(0, new GeoPoint(40.689604, -74.04455), 13),
-    new Factory(1, new GeoPoint(40.689604, -74.04455), 34),
-    new Factory(2, new GeoPoint(40.689604, -74.04455), 30));
+    new Factory(0, new GeoPoint(41.689604, -74.04455), 13),
+    new Factory(1, new GeoPoint(41.689604, -74.04455), 34),
+    new Factory(2, new GeoPoint(41.689604, -74.04455), 30));
 
   warehouses_storage.push(
     new Warehouse(0, new GeoPoint(40.689604, -74.04455)),
@@ -34,8 +34,8 @@ function start_app() {
     new Warehouse(2, new GeoPoint(40.689604, -74.04455)));
 
   outposts_storage.push(
-    new Outpost(1, new GeoPoint(40.689604, -74.04455), 0.9),
-    new Outpost(2, new GeoPoint(40.689604, -74.04455), 0.9));
+    new Outpost(1, new GeoPoint(42.689604, -74.04455), 0.9),
+    new Outpost(2, new GeoPoint(42.689604, -74.04455), 0.9));
 
 
 //Needed in priority > 0 for next order cancel rules

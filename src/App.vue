@@ -28,9 +28,9 @@
     methods: {
       getActualData: function () {
         truck_service.subscribe(new TruckMovementHandler(this));
+
       },
       move_truck: function (truck) {
-
         if (!this.markers[truck.id]) {
           this.markers[truck.id] = L.marker([truck.geo._degLat, truck.geo._degLon], {icon: this.truckIcon});
           this.markers[truck.id].bindTooltip("Грузовик " + truck.id).openTooltip();
@@ -38,8 +38,6 @@
         } else {
           this.markersActualPosition[truck.id] = {lat: truck.geo._degLat, lng: truck.geo._degLon};
         }
-
-        console.log("Truck position set: " + truck)
       }
     },
     mounted() {

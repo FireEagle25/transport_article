@@ -1,9 +1,9 @@
 import Geopoint from "./geopoint.js";
 
 export const truck_statuses = {
-  moving_to_the_outpost: 1,
+  moving_to_the_outpost: 8889,
   at_the_outpost: 2,
-  moving_to_the_client: 3,
+  moving_to_the_client: 42,
   moving_to_the_warehouse: 4
 };
 
@@ -21,6 +21,10 @@ class Truck extends Geopoint{
   constructor(id, geo, products_count, order_id, path, dest) {
     super(id, geo);
 
+    this.status = truck_statuses.moving_to_the_outpost;
+
+    console.log(this, "status set in constructor " + this.status);
+
     if (products_count > MAX_PAYLOAD) {
       console.error("Truck products_count >  Truck's MAX_PAYLOAD");
       products_count = MAX_PAYLOAD
@@ -29,14 +33,15 @@ class Truck extends Geopoint{
     this.products_count = products_count;
     this.dest = dest;
     this.path = path;
-    this.status = truck_statuses.moving_to_the_outpost;
     this.order_id = order_id;
   }
 
   move_to_next_geopoint() {
-    if (this.dest.length >= 1) {
+    console.log('Двигаемся', this, this.path[0], this.path[1]);
+    if (this.path.length > 0) {
       this.geo = this.path[0];
-      this.path = this.path.shift();
+      this.path.shift();
+      console.log(this, 'передвинулись', this.geo);
       return false;
     }
     else
@@ -44,12 +49,12 @@ class Truck extends Geopoint{
   }
 
   change_path(path, dest) {
-    this.geo = path[0];
-    this.path = path.shift();
+    this.path = path;
     this.dest = dest;
   }
 
   change_status(status) {
+    console.log(this, "status set in change_status " + this.status, this.dest);
     this.status = status;
   }
 }
