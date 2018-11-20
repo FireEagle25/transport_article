@@ -28,7 +28,6 @@
     methods: {
       getActualData: function () {
         truck_service.subscribe(new TruckMovementHandler(this));
-
       },
       move_truck: function (truck) {
         if (!this.markers[truck.id]) {
@@ -36,7 +35,9 @@
           this.markers[truck.id].bindTooltip("Грузовик " + truck.id).openTooltip();
           this.markers[truck.id].addTo(this.map);
         } else {
-          this.markersActualPosition[truck.id] = {lat: truck.geo._degLat, lng: truck.geo._degLon};
+          this.markers[truck.id].setLatLng([truck.geo._degLat, truck.geo._degLon]);
+
+          console.log("Truck moved to: " + truck.geo._degLat + " " + truck.geo._degLon);
         }
       }
     },
@@ -46,7 +47,6 @@
       this.getActualData();
 
       this.markers = [];
-      this.markersActualPosition = [];
       this.map = L.map('trucks-map').setView([40.689604, -74.04455], 14);
 
       this.truckIcon = L.icon({
@@ -60,27 +60,6 @@
         attribution: '',
         maxZoom: 18
       }).addTo(this.map);
-
-      var lerpingInterval = setInterval(
-        function () {
-          for (var key in this.markers) {
-            var currentLatLng = this.markers[key].getLatLng();
-            var targetPosition = this.markersActualPosition[key];
-
-            if (!targetPosition)
-              return;
-
-            this.markers[key].setLatLng([lerp(currentLatLng.lat, targetPosition.lat),
-              lerp(currentLatLng.lng, targetPosition.lng)]);
-          }
-        },
-        50
-      );
-
-      function lerp(from, to) {
-        return from+((to-from)/20);
-      }
-
     }
   }
 
