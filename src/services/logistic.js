@@ -9,13 +9,17 @@ export function find_nearest_factory_for_customer(geopoint) {
   return find_nearest_factory(nearest_outpost.geo);
 }
 
-export function get_initial_way(start_geopoint) {
+export function get_initial_way(start_geopoint, cb) {
   const nearest_outpost = find_nearest_outpost(start_geopoint);
-  return get_geo_path(start_geopoint, nearest_outpost.geo);
+  return get_geo_path(start_geopoint, nearest_outpost.geo, cb);
 }
 
 export function find_nearest_factory(geopoint) {
-  return find_nearest_from_objects(geopoint, factories_storage);
+
+  let min = 0;
+  let max = Math.floor(factories_storage.length);
+  return factories_storage[Math.floor(Math.random() * (max - min + 1)) + min];
+  //return find_nearest_from_objects(geopoint, factories_storage);
 }
 
 export function find_nearest_outpost(geopoint) {

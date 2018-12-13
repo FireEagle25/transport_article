@@ -5,7 +5,7 @@ import {orders_storage} from "../main";
 import {order_statuses} from "../../models/order";
 import {find_nearest_warehouse} from "../logistic";
 
-const MOVE_INTERVAL = 20000;
+const MOVE_INTERVAL = 10000;
 
 
 class TruckService extends Observable{
@@ -34,7 +34,7 @@ class TruckService extends Observable{
         const moving_ended = truck.move_to_next_geopoint();
 
         if (truck.status == truck_statuses.moving_to_the_client && orders_storage[truck.order_id].status == order_statuses.canceled) {
-          truck.change_path(get_geo_path(truck.geo, find_nearest_warehouse(truck.geo).geo), find_nearest_warehouse(truck.geo));
+          truck.change_path(get_geo_path(truck.geo, find_nearest_warehouse(truck.geo).geo, truck.change_path), find_nearest_warehouse(truck.geo));
           truck.change_status(truck_statuses.moving_to_the_warehouse);
         }
 
@@ -73,16 +73,16 @@ class TruckService extends Observable{
     self.remove(truck);
 
     setTimeout(function () {
-      console.log(truck, 'Меняем статут после проверки');
+      console.log(truck, 'Меняем статус после проверки');
       if (orders_storage[truck.order_id].status == order_statuses.active) {
-        truck.change_path(get_geo_path(truck.geo, orders_storage[truck.order_id].customer.geo), orders_storage[truck.order_id].customer);
+        truck.change_path(get_geo_path(truck.geo, orders_storage[truck.order_id].customer.geo, (path) => {truck.change_path(path); console.log('Здесь');}), orders_storage[truck.order_id].customer);
 
         truck.change_status(truck_statuses.moving_to_the_client);
 
-        console.log(truck, truck.status, 'Поменяли статут после проверки');
+        console.log(truck, truck.status, 'Поменяли статус после проверки');
       }
       else {
-        truck.change_path(get_geo_path(truck.geo, find_nearest_warehouse(truck.geo).geo, find_nearest_warehouse(truck.geo)));
+        truck.change_path(get_geo_path(truck.geo, find_nearest_warehouse(truck.geo).geo, (path) => {truck.change_path(path); console.log('Здесь');}));
         truck.change_status(truck_statuses.moving_to_the_warehouse);
       }
       console.log('возвращаем', truck);

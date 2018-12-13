@@ -11,29 +11,29 @@ class OrderHandler {
   }
 
   notify(order) {
+    let self = this;
+
     if (order.status !== order_statuses.handle)
       return;
 
     const start_factory = find_nearest_factory_for_customer(order.customer.geo);
 
     let truck_payloads = this.get_trucks_payloads(order.products_count, start_factory.max_truck_payload);
-    let initial_way = get_initial_way(start_factory.geo);
+    get_initial_way(start_factory.geo, function (initial_way) {
+      let truck_generation = setInterval(function () {
+        orders_storage[order.id].change_status(order_statuses.active);
 
-    let self = this;
+        if (initial_way.length == 0)
+          console.log(start_factory, order, truck_payloads, initial_way[0]);
 
-    let truck_generation = setInterval(function () {
-      orders_storage[order.id].change_status(order_statuses.active);
+        const truck = run_truck(order.id, start_factory, truck_payloads.shift(), initial_way, find_nearest_outpost(initial_way[0]));
+        self.truck_service.push(truck);
 
-      if (initial_way.length == 0)
-        console.log(start_factory, order, truck_payloads, initial_way[0]);
+        if (truck_payloads.length == 0)
+          clearInterval(truck_generation);
 
-      const truck = run_truck(order.id, start_factory, truck_payloads.shift(), initial_way, find_nearest_outpost(initial_way[0]));
-      self.truck_service.push(truck);
-
-      if (truck_payloads.length == 0)
-        clearInterval(truck_generation);
-
-    }, TRUCK_GENERATION_INTERVAL);
+      }, TRUCK_GENERATION_INTERVAL);
+    });
   }
 
   get_trucks_payloads(order_products_count, max_truck_payload) {

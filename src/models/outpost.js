@@ -1,7 +1,7 @@
 import Geopoint from "./geopoint.js";
 import {MAX_PAYLOAD} from "./truck";
 
-const CHECKING_TIME_DEPENDENCY_FROM_PAYLOAD = 2;
+export const CHECKING_TIME_DEPENDENCY_FROM_PAYLOAD = 2;
 
 class Outpost extends Geopoint{
   constructor(id, geo, check_probability) {

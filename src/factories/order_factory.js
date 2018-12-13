@@ -5,7 +5,7 @@ import {customers_storage, orders_storage, tariffs_storage} from "../services/ma
 const MAX_PRODUCTS_COUNT_PER_ORDER = 100;
 const RANDOM_NUMBER_FOR_ORDER_CREATION = 1;
 const ORDER_GENERATION_FREQUENCY = 1;
-export const ORDER_GENERATION_TIME = 1000;
+export const ORDER_GENERATION_TIME = 10000;
 
 class OrderFactory extends Observable{
 
@@ -24,7 +24,7 @@ class OrderFactory extends Observable{
 
       //TODO: убрать стоп
 
-      if (orders_storage.length > 3)
+      if (orders_storage.length > 15)
         clearInterval(interval);
 
       for (const customer of customers_storage) {
