@@ -19,8 +19,6 @@ export function get_geo_path(geo_from, geo_to, cb=null) {
 
 function get_geo_path_from_mapbox(geo_from, geo_to, cb) {
 
-  console.log(geo_from.longitude(false));
-
   let result = [geo_from];
 
   let waiting_for_path_waipoints = [];

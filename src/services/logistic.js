@@ -1,5 +1,5 @@
 import {get_distance, get_geo_path} from "./geo";
-import {factories_storage, outposts_storage, warehouses_storage} from "./main";
+import {factories_storage, outposts_storage, second_outposts_storage, warehouses_storage} from "./main";
 
 const MAX_DISTANCE_BETWEEN_GEOPOINTS_IN_THE_WORLD_IN_KM = 21000;
 
@@ -24,6 +24,10 @@ export function find_nearest_factory(geopoint) {
 
 export function find_nearest_outpost(geopoint) {
   return find_nearest_from_objects(geopoint, outposts_storage);
+}
+
+export function find_nearest_second_outpost(geopoint) {
+  return find_nearest_from_objects(geopoint, second_outposts_storage);
 }
 
 export function find_nearest_warehouse(geopoint) {

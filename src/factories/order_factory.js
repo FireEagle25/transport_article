@@ -3,9 +3,10 @@ import Order from '../models/order.js';
 import {customers_storage, orders_storage, tariffs_storage} from "../services/main";
 
 const MAX_PRODUCTS_COUNT_PER_ORDER = 100;
+const MIN_PRODUCTS_COUNT_PER_ORDER = 90;
 const RANDOM_NUMBER_FOR_ORDER_CREATION = 1;
 const ORDER_GENERATION_FREQUENCY = 1;
-export const ORDER_GENERATION_TIME = 10000;
+export const ORDER_GENERATION_TIME = 1000;
 
 class OrderFactory extends Observable{
 
@@ -21,15 +22,15 @@ class OrderFactory extends Observable{
 
     const interval = setInterval(function () {
 
-
-      //TODO: убрать стоп
-
       if (orders_storage.length > 15)
         clearInterval(interval);
 
       for (const customer of customers_storage) {
         if (Math.floor((Math.random() * ORDER_GENERATION_FREQUENCY) + 1) == RANDOM_NUMBER_FOR_ORDER_CREATION) {
-          const new_order = new Order(orders_storage.length, tariffs_storage[Math.floor(Math.random() * tariffs_storage.length)], Math.floor(Math.random() * MAX_PRODUCTS_COUNT_PER_ORDER), customer);
+
+          const products_count = Math.floor(Math.random() * (MAX_PRODUCTS_COUNT_PER_ORDER-MIN_PRODUCTS_COUNT_PER_ORDER)) + MIN_PRODUCTS_COUNT_PER_ORDER;
+
+          const new_order = new Order(orders_storage.length, tariffs_storage[Math.floor(Math.random() * tariffs_storage.length)], products_count, customer);
 
           self.notify_all(new_order);
           orders_storage.push(new_order);

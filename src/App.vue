@@ -9,11 +9,13 @@
 
       <br />
 
-      <p><b>Параметр 1:</b> содержимое</p>
-      <p><b>Параметр 2:</b> содержимое</p>
-      <p><b>Параметр 3:</b> содержимое</p>
-      <p><b>Параметр 4:</b> содержимое</p>
-
+      <p><b>Грузовиков доехало до клиентов:</b> {{Math.floor(trucks_at_the_client_count / all_trucks_count * 100)}}%</p>
+      <p><b>Грузовиков не доехало:</b> {{Math.floor(trucks_at_the_client_count * -1 / all_trucks_count * 100 + 100)}}%</p>
+      <p><b>Проверено на первой границе:</b> {{Math.floor(checked_at_outposts / all_trucks_count * 100)}}%</p>
+      <p><b>Проверено на второй границе:</b> {{Math.floor(checked_at_the_second_outpost / all_trucks_count * 100)}}%</p>
+      <p><b>Прибыль:</b> {{success}}</p>
+      <p><b>Убытки:</b> {{unsuccess}}</p>
+      <p><b>Чистая прибыль:</b> {{success - unsuccess}}</p>
     </div>
 
   </div>
@@ -25,13 +27,38 @@
     factories_storage,
     outposts_storage,
     warehouses_storage,
-    customers_storage
+    customers_storage,
+    second_outposts_storage, total_success, total_unsuccess
   } from "./services/main";
   import TruckMovementHandler from "./handlers/frontend/truck_movement_handler";
+  import {truck_statuses} from './models/truck';
+  import {trucks_count} from "./factories/truck_factory";
+  import {checked_trucks_at_the_second_outpost} from "./models/second_outpost";
+  import {checked_trucks} from "./models/outpost";
 
   export default {
     name: 'App',
+    data() {
+      return {
+        trucks_at_the_client_count: 0,
+        trucks_at_the_warehouse_count: 0,
+        all_trucks_count: 0,
+        checked_at_outposts: 0,
+        checked_at_the_second_outpost: 0,
+        success: 0,
+        unsuccess: 0
+      }
+    },
     methods: {
+      set_parameters_for_showing: function() {
+        this.trucks_at_the_client_count = truck_service.trucks.filter(truck => truck.status == truck_statuses.moving_to_the_client).length;
+        this.all_trucks_count = trucks_count;
+        this.checked_at_the_second_outpost = checked_trucks_at_the_second_outpost;
+        this.checked_at_outposts = checked_trucks;
+
+        this.success = total_success;
+        this.unsuccess= total_unsuccess;
+      },
       getActualData: function () {
         truck_service.subscribe(new TruckMovementHandler(this));
       },
@@ -42,8 +69,6 @@
           this.markers[truck.id].addTo(this.map);
         } else {
           this.markers[truck.id].targetLatLng = {lat: truck.geo._degLat, lng: truck.geo._degLon};
-
-          console.log("Truck moved to: " + truck.geo._degLat + " " + truck.geo._degLon);
         }
       }
     },
@@ -53,7 +78,7 @@
       this.getActualData();
 
       this.markers = [];
-      this.map = L.map('trucks-map').setView([41.689604, -74.04455], 8);
+      this.map = L.map('trucks-map').setView([51.1078852, 17.0385376], 5);
 
       this.truckIcon = L.icon({
         iconUrl: 'http://aux2.iconspalace.com/uploads/truck-icon-256-1204409192.png',
@@ -111,11 +136,17 @@
         L.marker([geo._degLat, geo._degLon], {icon: this.outpostIcon}).addTo(this.map);
       }
 
+      for (var obj in second_outposts_storage) {
+        var geo = second_outposts_storage[obj].geo;
+        L.marker([geo._degLat, geo._degLon], {icon: this.outpostIcon}).addTo(this.map);
+      }
+
       for (var obj in customers_storage) {
         var geo = customers_storage[obj].geo;
         L.marker([geo._degLat, geo._degLon], {icon: this.customerIcon}).addTo(this.map);
       }
 
+      setInterval(this.set_parameters_for_showing, 1000);
 
       var self = this;
 

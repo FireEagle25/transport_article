@@ -1,7 +1,9 @@
 import Geopoint from "./geopoint.js";
 import {MAX_PAYLOAD} from "./truck";
 
-export const CHECKING_TIME_DEPENDENCY_FROM_PAYLOAD = 2;
+export const CHECKING_TIME_DEPENDENCY_FROM_PAYLOAD = 20;
+
+export let checked_trucks = 0;
 
 class Outpost extends Geopoint{
   constructor(id, geo, check_probability) {
@@ -11,9 +13,10 @@ class Outpost extends Geopoint{
   }
 
   get_check_time(truck_payload) {
-    if (Math.floor((Math.random() * 50) + 1 + (truck_payload/MAX_PAYLOAD * 50)) < this.check_probability)
+    if (Math.floor((Math.random() * 50) + 1 + (truck_payload/MAX_PAYLOAD * 50)) < this.check_probability * 100)
       return 0;
 
+    checked_trucks++;
     return Math.pow(truck_payload/MAX_PAYLOAD, CHECKING_TIME_DEPENDENCY_FROM_PAYLOAD) * CHECKING_TIME_DEPENDENCY_FROM_PAYLOAD * 1000;
   }
 }
