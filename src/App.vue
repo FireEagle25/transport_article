@@ -171,6 +171,16 @@
       function lerp(from, to) {
         return from+((to-from)/100);
       }
+      
+      
+      var regularRestart = setInterval(function(){
+        trucks.clear(); //TODO: Паша, вызывай свою функцию
+        
+        for (var key in self.markers)
+          self.map.removeLayer(self.markers[key]);
+          
+        main(); //TODO: Паша, вызывай свою функцию
+      }, 30000);
     }
   }
 
