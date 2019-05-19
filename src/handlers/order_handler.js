@@ -3,7 +3,7 @@ import {find_nearest_factory_for_customer, find_nearest_outpost, get_initial_way
 import run_truck from "../factories/truck_factory";
 import {orders_storage} from "../services/main";
 
-const TRUCK_GENERATION_INTERVAL = 500;
+const TRUCK_GENERATION_INTERVAL = 10;
 
 class OrderHandler {
   constructor(truck_service) {
@@ -23,8 +23,8 @@ class OrderHandler {
       let truck_generation = setInterval(function () {
         orders_storage[order.id].change_status(order_statuses.active);
 
-        if (initial_way.length == 0)
-          console.log(start_factory, order, truck_payloads, initial_way[0]);
+        /*if (initial_way.length == 0)
+          console.log(start_factory, order, truck_payloads, initial_way[0]);*/
 
         const truck = run_truck(order.id, start_factory, truck_payloads.shift(), initial_way, find_nearest_outpost(initial_way[0]));
         self.truck_service.push(truck);

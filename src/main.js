@@ -3,11 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import start_app from './services/main.js';
 
 Vue.config.productionTip = false;
-
-start_app();
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -15,3 +12,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 });
+

@@ -5,7 +5,7 @@ export let checked_trucks_at_the_second_outpost = 0;
 
 class SecondOutpost extends Outpost{
   get_check_time(truck_payload) {
-    if (Math.floor((Math.random() * 50) + 1 + (truck_payload/MAX_PAYLOAD * 50)) < this.check_probability * 100)
+    if (Math.floor((Math.random() * 20) + 1 + ((1/(1+Math.exp(-(truck_payload-40)/10))) * 80)) < this.check_probability * 100)
       return 0;
 
     checked_trucks_at_the_second_outpost++;

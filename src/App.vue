@@ -9,13 +9,13 @@
 
       <br />
 
-      <p><b>Грузовиков доехало до клиентов:</b> {{Math.floor(trucks_at_the_client_count / all_trucks_count * 100)}}%</p>
-      <p><b>Грузовиков не доехало:</b> {{Math.floor(trucks_at_the_client_count * -1 / all_trucks_count * 100 + 100)}}%</p>
-      <p><b>Проверено на первой границе:</b> {{Math.floor(checked_at_outposts / all_trucks_count * 100)}}%</p>
-      <p><b>Проверено на второй границе:</b> {{Math.floor(checked_at_the_second_outpost / all_trucks_count * 100)}}%</p>
-      <p><b>Прибыль:</b> {{success}}</p>
-      <p><b>Убытки:</b> {{unsuccess}}</p>
-      <p><b>Чистая прибыль:</b> {{success - unsuccess}}</p>
+      <p><b>Грузовиков доехало до клиентов:</b>   {{Math.floor(trucks_at_the_client_count / all_trucks_count * 100)}}%</p>
+      <p><b>Грузовиков не доехало:</b>            {{Math.floor(trucks_at_the_client_count * -1 / all_trucks_count * 100 + 100)}}%</p>
+      <p><b>Проверено на первой границе:</b>      {{Math.floor(checked_at_outposts / all_trucks_count * 100)}}%</p>
+      <p><b>Проверено на второй границе:</b>      {{Math.floor(checked_at_the_second_outpost / all_trucks_count * 100)}}%</p>
+      <p><b>Прибыль:</b>                          {{success}}</p>
+      <p><b>Убытки:</b>                           {{unsuccess}}</p>
+      <p><b>Чистая прибыль:</b>                   {{success - unsuccess}}</p>
     </div>
 
   </div>
@@ -28,13 +28,15 @@
     outposts_storage,
     warehouses_storage,
     customers_storage,
-    second_outposts_storage, total_success, total_unsuccess
+    second_outposts_storage, total_success, total_unsuccess, clear_all
   } from "./services/main";
   import TruckMovementHandler from "./handlers/frontend/truck_movement_handler";
   import {truck_statuses} from './models/truck';
   import {trucks_count} from "./factories/truck_factory";
   import {checked_trucks_at_the_second_outpost} from "./models/second_outpost";
   import {checked_trucks} from "./models/outpost";
+
+  import start_app from './services/main.js';
 
   export default {
     name: 'App',
@@ -46,7 +48,8 @@
         checked_at_outposts: 0,
         checked_at_the_second_outpost: 0,
         success: 0,
-        unsuccess: 0
+        unsuccess: 0,
+        max_truck_payload: 100
       }
     },
     methods: {
@@ -73,6 +76,8 @@
       }
     },
     mounted() {
+      start_app(this.max_truck_payload);
+
       console.log("mounted");
 
       this.getActualData();
@@ -171,16 +176,66 @@
       function lerp(from, to) {
         return from+((to-from)/100);
       }
-      
-      
+
+
+      start_app(this.max_truck_payload);
+
+      setTimeout(function () {
+        let result = {
+          trucks_success: Math.floor(self.trucks_at_the_client_count / self.all_trucks_count * 100),
+          trucks_unsucces: Math.floor(self.trucks_at_the_client_count * -1 / self.all_trucks_count * 100 + 100),
+          checked_at_first: Math.floor(self.checked_at_outposts / self.all_trucks_count * 100),
+          checked_at_second: Math.floor(checked_trucks_at_the_second_outpost / self.all_trucks_count * 100),
+          success: self.success,
+          unsuccess: self.unsuccess,
+          profit: (self.success - self.unsuccess),
+          stage: self.max_truck_payload,
+          trucks_count: trucks_count
+        };
+
+        console.log(JSON.stringify(result));
+
+        localStorage.setItem(self.toString(), JSON.stringify(result));
+
+      }, 20000);
+
+
+      /*
+      var self = this;
       var regularRestart = setInterval(function(){
-        trucks.clear(); //TODO: Паша, вызывай свою функцию
-        
+
+        let result = {
+          trucks_success: Math.floor(self.trucks_at_the_client_count / self.all_trucks_count * 100),
+          trucks_unsucces: Math.floor(self.trucks_at_the_client_count * -1 / self.all_trucks_count * 100 + 100),
+          checked_at_first: Math.floor(self.checked_at_outposts / self.all_trucks_count * 100),
+          checked_at_second: Math.floor(checked_trucks_at_the_second_outpost / self.all_trucks_count * 100),
+          success: self.success,
+          unsuccess: self.unsuccess,
+          profit: (self.success - self.unsuccess),
+          stage: self.max_truck_payload
+        };
+
+        console.log("res:", JSON.stringify(result));
+
+        self.trucks_at_the_client_count = 0;
+        self.trucks_at_the_warehouse_count = 0;
+        self.all_trucks_count = 0;
+        self.checked_at_outposts = 0;
+        self.checked_at_the_second_outpost = 0;
+        self.success = 0;
+        self.unsuccess = 0;
+        self.max_truck_payload += 2;
+
+        if (self.max_truck_payload > 100)
+          clearInterval(regularRestart);
+
+        clear_all();
+
         for (var key in self.markers)
           self.map.removeLayer(self.markers[key]);
-          
-        main(); //TODO: Паша, вызывай свою функцию
-      }, 30000);
+
+        start_app(self.max_truck_payload);
+      }, 30000);*/
     }
   }
 

@@ -18,7 +18,7 @@ export function find_nearest_factory(geopoint) {
 
   let min = 0;
   let max = Math.floor(factories_storage.length);
-  return factories_storage[Math.floor(Math.random() * (max - min + 1)) + min];
+  return factories_storage[Math.floor(Math.random() * (max - min)) + min];
   //return find_nearest_from_objects(geopoint, factories_storage);
 }
 
@@ -41,7 +41,7 @@ function find_nearest_from_objects(geopoint, objects) {
   objects.map(object => {
     const distance_between_object_and_geopoint = get_distance(geopoint, object.geo);
 
-    if (distance_between_object_and_geopoint < min_distance_between_geopoint_and_object) {
+    if (distance_between_object_and_geopoint < min_distance_between_geopoint_and_object && (object != undefined)) {
       min_distance_between_geopoint_and_object = distance_between_object_and_geopoint;
       nearest_object = object;
     }

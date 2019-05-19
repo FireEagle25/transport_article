@@ -5,7 +5,8 @@ const mbxClient = directionsClient({ accessToken: "pk.eyJ1IjoiZXZlbGVudCIsImEiOi
 let geo_path_storage = [];
 
 export function get_geo_path(geo_from, geo_to, cb=null) {
-  /*TODO: add mapbox api
+  /*
+   mapbox api
     See here: https://www.mapbox.com/api-documentation/#directions
   */
 
@@ -26,7 +27,7 @@ function get_geo_path_from_mapbox(geo_from, geo_to, cb) {
   for (let i=0; i< 100; i++)
     waiting_for_path_waipoints.push(geo_from);
 
-  mbxClient
+  /*mbxClient
     .getDirections({
       profile: 'driving',
       waypoints: [
@@ -44,7 +45,6 @@ function get_geo_path_from_mapbox(geo_from, geo_to, cb) {
     .send()
     .then(response => {
       const directions = response.body;
-      console.log(directions);
 
       result = directions.waypoints.map( (waypoint) => {
         return new GeoPoint(waypoint.location[1], waypoint.location[0]);
@@ -53,21 +53,26 @@ function get_geo_path_from_mapbox(geo_from, geo_to, cb) {
       result.push(geo_to);
 
       geo_path_storage.push({
-        'from': geo_from,
-        'to': geo_to,
+        'from': JSON.stringify(geo_from),
+        'to': JSON.stringify(geo_to),
         'path': result
       });
 
       cb(result);
-    });
+    });*/
+
+  setTimeout(function () {
+    cb([geo_from, geo_to]);
+  },10);
 
   return waiting_for_path_waipoints;
 }
 
 function find_path_in_storage(geo_from, geo_to) {
   for (let path in geo_path_storage)
-    if ((path['from'] == geo_from) && (path['to'] == geo_to))
+    if ((path['from'] == JSON.stringify(geo_from)) && (path['to'] == JSON.stringify(geo_to)))
       return path['path'];
+
   return null;
 }
 

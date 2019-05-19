@@ -86,11 +86,11 @@ class TruckService extends Observable{
 
     setTimeout(function () {
       if (orders_storage[truck.order_id].status == order_statuses.active) {
-        truck.change_path(get_geo_path(truck.geo, orders_storage[truck.order_id].customer.geo, (path) => {truck.change_path(path); console.log('Здесь');}), orders_storage[truck.order_id].customer);
+        truck.change_path(get_geo_path(truck.geo, orders_storage[truck.order_id].customer.geo, (path) => {truck.change_path(path);}), orders_storage[truck.order_id].customer);
 
         truck.distance += get_distance(orders_storage[truck.order_id].customer.geo, truck.geo);
 
-        increment_success(truck.distance * orders_storage[truck.order_id].tariff.price_for_km * truck.products_count/100000);
+        increment_success(truck.distance * orders_storage[truck.order_id].tariff.price_for_km * truck.products_count/5000);
 
         truck.change_status(truck_statuses.moving_to_the_client);
       }
@@ -98,7 +98,7 @@ class TruckService extends Observable{
         let warehouse = find_nearest_warehouse(truck.geo);
 
         truck.distance += get_distance(warehouse.geo, truck.geo);
-        increment_unsuccess(truck.distance / 10);
+        increment_unsuccess(truck.distance / 4);
 
         truck.change_path(get_geo_path(truck.geo, warehouse.geo, (path) => {truck.change_path(path);}));
         truck.change_status(truck_statuses.moving_to_the_warehouse);

@@ -6,7 +6,7 @@ const MAX_PRODUCTS_COUNT_PER_ORDER = 100;
 const MIN_PRODUCTS_COUNT_PER_ORDER = 90;
 const RANDOM_NUMBER_FOR_ORDER_CREATION = 1;
 const ORDER_GENERATION_FREQUENCY = 1;
-export const ORDER_GENERATION_TIME = 1000;
+export const ORDER_GENERATION_TIME = 10;
 
 class OrderFactory extends Observable{
 
@@ -22,7 +22,7 @@ class OrderFactory extends Observable{
 
     const interval = setInterval(function () {
 
-      if (orders_storage.length > 15)
+      if (orders_storage.length > 1000)
         clearInterval(interval);
 
       for (const customer of customers_storage) {

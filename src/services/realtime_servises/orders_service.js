@@ -4,7 +4,7 @@ import {order_statuses} from "../../models/order";
 import {orders_storage} from "../main";
 
 export const ORDER_HANDLE_TIME = 1 ; //ORDER_GENERATION_TIME;
-const CANCEL_TIME_IN_SECONDS = 0;
+const CANCEL_TIME_IN_SECONDS = 4;
 
 
 class OrdersService extends Observable{
@@ -42,7 +42,7 @@ class OrdersService extends Observable{
     setInterval(function () {
       orders_storage.map(order => {
         if ((order.status != order_statuses.canceled && order.status != order_statuses.closed) && Math.floor((Date.now() - order.created_at) / 1000) >= CANCEL_TIME_IN_SECONDS) {
-          if (Math.floor((Math.random() * 10 / order.tariff.priority)) == 0) {
+          if (Math.floor((Math.random() * 12 / order.tariff.priority)) == 0) {
             order.change_status(order_statuses.canceled);
           }
         }
